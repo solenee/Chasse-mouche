@@ -1,0 +1,49 @@
+<project>
+
+	<description>TK1 - Programmieraufgabe 1 - DIF EHOLIE SOBANIA
+	</description>
+
+	<property name="src.dir" value="src" />
+	<property name="bin.dir" value="bin" />
+	<property name="jar.dir" value="exe" />
+	<echo message="aaa" />
+	<target name="clean">
+	    <echo message="clean" />
+		<delete dir="bin" />
+		<delete dir="exe" />
+	</target>
+
+	<target name="compile" depends="clean">
+	    <echo message="compile" />
+		<mkdir dir="bin" />
+		<javac srcdir="src" destdir="bin" />
+	</target>
+
+	<target name="jar" depends="compile">
+	    <echo message="jars" />
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/ClientGUI.jar" basedir="${bin.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="client/ClientGUI" />
+			</manifest>
+		</jar>
+
+		<jar destfile="${jar.dir}/Server.jar" basedir="${bin.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="server/Server" />
+			</manifest>
+		</jar>
+		<echo message="Jar creation completed" />
+	</target>
+
+
+	<target name="run" depends="jar">
+	    <echo message="run" />
+		<parallel>
+			<!-- start here one server and two clients -->
+			<java jar="${jar.dir}/Server.jar" fork="true" />
+			<java jar="${jar.dir}/ClientGUI.jar" fork="true" />
+			<java jar="${jar.dir}/ClientGUI.jar" fork="true" />
+		</parallel>
+	</target>
+</project>
